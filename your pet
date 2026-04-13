@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Love Pet 💖</title>
+
+<style>
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  text-align:center;
+  transition:0.5s;
+}
+
+.pink{ background:#ffe6f0; }
+.olive{ background:#dfe7d3; }
+.purple{ background:#e6d6ff; }
+.teal{ background:#d6f5f5; }
+.dark{ background:#1e1e2f; color:white; }
+
+#loading{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#ff80ab;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  z-index:10;
+}
+
+.card{
+  background:white;
+  margin:15px;
+  padding:15px;
+  border-radius:20px;
+}
+
+.dark .card{ background:#2c2c3c; }
+
+#pet{
+  font-size:90px;
+  animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+  50%{transform:translateY(-8px);}
+}
+
+button{
+  margin:5px;
+  padding:10px;
+  border:none;
+  border-radius:10px;
+  background:#ff80ab;
+  color:white;
+}
+
+#letter{
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background:white;
+  padding:20px;
+  border-radius:20px;
+  display:none;
+}
+</style>
+</head>
+
+<body class="pink">
+
+<div id="loading">Loading your pet... 💖</div>
+
+<h2 id="title">My Love Pet 💖</h2>
+
+<div class="card" id="captureArea">
+  <div id="pet">🐣</div>
+
+  <p>
+    🍎 <span id="hunger"></span> |
+    💤 <span id="energy"></span> |
+    🎮 <span id="happy"></span>
+  </p>
+
+  <button onclick="feed()">Feed</button>
+  <button onclick="sleepPet()">Sleep</button>
+  <button onclick="play()">Play</button>
+  <button onclick="changePet()">Change Pet</button>
+  <button onclick="namePet()">Name Pet</button>
+  <button onclick="toggleMusic()">🎵</button>
+  <button onclick="dailyReward()">🎁 Daily</button>
+  <button onclick="takeShot()">📸 Screenshot</button>
+</div>
+
+<div class="card">
+  <button onclick="setTheme('pink')">Pink</button>
+  <button onclick="setTheme('olive')">Olive</button>
+  <button onclick="setTheme('purple')">Purple</button>
+  <button onclick="setTheme('teal')">Teal</button>
+  <button onclick="setTheme('dark')">Dark</button>
+</div>
+
+<div class="card">
+  <button onclick="miniGame()">🎮 Mini Game</button>
+</div>
+
+<div id="letter">
+💌 I LOVE YOU SAUR MUCH TO INFINITY AND BEYOND 💖<br><br>
+<button onclick="closeLetter()">Close</button>
+</div>
+
+<audio id="bgMusic" loop>
+<source src="https://www.bensound.com/bensound-music/bensound-romantic.mp3">
+</audio>
+
+<script>
+let hunger=50, energy=50, happiness=50;
+let pets=["🐣","🐱","🐶"];
+let currentPet=0;
+let music=false;
+
+// LOADING
+setTimeout(()=>{document.getElementById("loading").style.display="none";},2000);
+
+// UPDATE
+function update(){
+  document.getElementById("hunger").innerText=hunger;
+  document.getElementById("energy").innerText=energy;
+  document.getElementById("happy").innerText=happiness;
+
+  let pet=document.getElementById("pet");
+  pet.innerText = happiness>80 ? "💖" : pets[currentPet];
+
+  if(happiness>=100){
+    document.getElementById("letter").style.display="block";
+  }
+}
+
+// ACTIONS
+function feed(){hunger+=10; happiness+=5; update();}
+function sleepPet(){energy+=15; update();}
+function play(){happiness+=10; energy-=5; update();}
+
+// PET
+function changePet(){currentPet=(currentPet+1)%pets.length; update();}
+
+// NAME
+function namePet(){
+  let n=prompt("Name your pet:");
+  if(n) document.getElementById("title").innerText=n+" 💖";
+}
+
+// MUSIC
+function toggleMusic(){
+  let m=document.getElementById("bgMusic");
+  music=!music;
+  music?m.play():m.pause();
+}
+
+// THEME
+function setTheme(t){document.body.className=t;}
+
+// MINI GAME
+function miniGame(){
+  let r=Math.random();
+  if(r<0.5){happiness+=10; alert("💖 Happy!");}
+  else{energy+=10; alert("💤 Energy!");}
+  update();
+}
+
+// 🎁 DAILY REWARD
+function dailyReward(){
+  let today=new Date().toDateString();
+  let last=localStorage.getItem("lastReward");
+
+  if(last===today){
+    alert("Already claimed today 😭");
+  }else{
+    happiness+=20;
+    hunger+=10;
+    energy+=10;
+    localStorage.setItem("lastReward", today);
+    alert("🎁 Daily reward claimed!");
+    update();
+  }
+}
+
+// 📸 SCREENSHOT
+function takeShot(){
+  alert("📸 Take a screenshot now!");
+}
+
+// LETTER
+function closeLetter(){
+  document.getElementById("letter").style.display="none";
+}
+
+// DECAY
+setInterval(()=>{
+  hunger--; energy--; happiness--;
+  if(hunger<0) hunger=0;
+  if(energy<0) energy=0;
+  if(happiness<0) happiness=0;
+  update();
+},4000);
+
+update();
+</script>
+
+</body>
+</html>
